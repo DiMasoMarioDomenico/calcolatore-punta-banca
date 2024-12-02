@@ -2,6 +2,7 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calcolatore Punta e Banca</title>
     <style>
         /* Stili CSS per migliorare l'aspetto */
@@ -9,17 +10,20 @@
             font-family: Arial, sans-serif;
             background-color: #f2f2f2;
             margin: 0;
-            padding: 20px;
+            padding: 0;
         }
         .container {
             background-color: #fff;
             padding: 20px;
             border-radius: 5px;
             max-width: 500px;
-            margin: auto;
+            margin: 20px auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         h1 {
             text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
         }
         .input-group {
             margin-bottom: 15px;
@@ -27,23 +31,53 @@
         label {
             display: block;
             margin-bottom: 5px;
+            font-weight: bold;
         }
         input[type="number"] {
             width: 100%;
-            padding: 8px;
+            padding: 10px;
+            font-size: 16px;
             box-sizing: border-box;
-        }
-        #result {
-            margin-top: 20px;
-        }
-        #result p {
-            font-size: 18px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
         }
         button {
             padding: 10px 15px;
             font-size: 16px;
             cursor: pointer;
             width: 100%;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+        }
+        #result p {
+            font-size: 16px;
+            margin: 8px 0;
+        }
+
+        /* Stile per dispositivi mobili */
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            h1 {
+                font-size: 20px;
+            }
+            button {
+                font-size: 14px;
+                padding: 8px;
+            }
+            #result p {
+                font-size: 14px;
+            }
         }
     </style>
 </head>
@@ -93,26 +127,11 @@
             }
 
             // Calcoli intermedi
-            var E10 = importoPuntata;
-            var E12 = quotaPuntata;
-            var E14 = quotaBancata;
-            var E16 = commissione;
-            var E27 = 0; // Se c'è un valore aggiuntivo, altrimenti 0
-
-            // PUNTATA BANCA = (E10 * E12) / (E14 - E16)
-            var puntataBanca = (E10 * E12) / (E14 - E16);
-
-            // RESPONSABILITÀ = E21 * (E14 - 1)
-            var responsabilita = puntataBanca * (E14 - 1);
-
-            // PROFITTO OPERAZIONE = (E10 * E12) - (E10 + E27)
-            var profittoOperazione = (E10 * E12) - (E10 + responsabilita);
-
-            // ROI = (E21 + E10 + F19) / (E10 + E21)
-            var roi = ((puntataBanca + E10 + profittoOperazione) / (E10 + puntataBanca)) * 100;
-
-            // RATING = (E10 + F19) / E10
-            var rating = ((E10 + profittoOperazione) / E10) * 100;
+            var puntataBanca = (importoPuntata * quotaPuntata) / (quotaBancata - commissione);
+            var responsabilita = puntataBanca * (quotaBancata - 1);
+            var profittoOperazione = (importoPuntata * quotaPuntata) - (importoPuntata + responsabilita);
+            var roi = ((puntataBanca + importoPuntata + profittoOperazione) / (importoPuntata + puntataBanca)) * 100;
+            var rating = ((importoPuntata + profittoOperazione) / importoPuntata) * 100;
 
             // Visualizzazione dei risultati arrotondati a due decimali
             document.getElementById('profittoOperazione').innerText = 'Profitto Operazione: € ' + profittoOperazione.toFixed(2);
