@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Calcolatore Punta e Banca</title>
+    <style>
+        /* Stili CSS per migliorare l'aspetto */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            max-width: 500px;
+            margin: auto;
+        }
+        h1 {
+            text-align: center;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        #result {
+            margin-top: 20px;
+        }
+        #result p {
+            font-size: 18px;
+        }
+        button {
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Calcolatore Punta e Banca</h1>
+        <div class="input-group">
+            <label for="importoPuntata">Importo Puntata (€):</label>
+            <input type="number" id="importoPuntata" placeholder="Inserisci l'importo della puntata" step="0.01">
+        </div>
+        <div class="input-group">
+            <label for="quotaPuntata">Quota Puntata:</label>
+            <input type="number" id="quotaPuntata" placeholder="Inserisci la quota puntata" step="0.01">
+        </div>
+        <div class="input-group">
+            <label for="quotaBancata">Quota Bancata:</label>
+            <input type="number" id="quotaBancata" placeholder="Inserisci la quota bancata" step="0.01">
+        </div>
+        <div class="input-group">
+            <label for="commissione">Commissione Exchange (%):</label>
+            <input type="number" id="commissione" placeholder="Inserisci la commissione dell'exchange" step="0.01">
+        </div>
+        <button onclick="calcola()">Calcola</button>
+
+        <div id="result">
+            <h2>Risultati:</h2>
+            <p id="profittoOperazione">Profitto Operazione: </p>
+            <p id="puntataBanca">Puntata Banca: </p>
+            <p id="roi">ROI (Ritorno sull'investimento): </p>
+            <p id="rating">Rating: </p>
+            <p id="responsabilita">Responsabilità: </p>
+        </div>
+    </div>
+
+    <script>
+        function calcola() {
+            // Recupero dei valori inseriti dall'utente
+            var importoPuntata = parseFloat(document.getElementById('importoPuntata').value);
+            var quotaPuntata = parseFloat(document.getElementById('quotaPuntata').value);
+            var quotaBancata = parseFloat(document.getElementById('quotaBancata').value);
+            var commissione = parseFloat(document.getElementById('commissione').value) / 100; // Convertire in decimale
+
+            // Verifica che tutti i campi siano compilati
+            if (isNaN(importoPuntata) || isNaN(quotaPuntata) || isNaN(quotaBancata) || isNaN(commissione)) {
+                alert('Per favore, compila tutti i campi.');
+                return;
+            }
+
+            // Calcoli intermedi
+            var E10 = importoPuntata;
+            var E12 = quotaPuntata;
+            var E14 = quotaBancata;
+            var E16 = commissione;
+            var E27 = 0; // Se c'è un valore aggiuntivo, altrimenti 0
+
+            // PUNTATA BANCA = (E10 * E12) / (E14 - E16)
+            var puntataBanca = (E10 * E12) / (E14 - E16);
+
+            // RESPONSABILITÀ = E21 * (E14 - 1)
+            var responsabilita = puntataBanca * (E14 - 1);
+
+            // PROFITTO OPERAZIONE = (E10 * E12) - (E10 + E27)
+            var profittoOperazione = (E10 * E12) - (E10 + responsabilita);
+
+            // ROI = (E21 + E10 + F19) / (E10 + E21)
+            var roi = ((puntataBanca + E10 + profittoOperazione) / (E10 + puntataBanca)) * 100;
+
+            // RATING = (E10 + F19) / E10
+            var rating = ((E10 + profittoOperazione) / E10) * 100;
+
+            // Visualizzazione dei risultati arrotondati a due decimali
+            document.getElementById('profittoOperazione').innerText = 'Profitto Operazione: € ' + profittoOperazione.toFixed(2);
+            document.getElementById('puntataBanca').innerText = 'Puntata Banca: € ' + puntataBanca.toFixed(2);
+            document.getElementById('roi').innerText = 'ROI (Ritorno sull\'investimento): ' + roi.toFixed(2) + '%';
+            document.getElementById('rating').innerText = 'Rating: ' + rating.toFixed(2) + '%';
+            document.getElementById('responsabilita').innerText = 'Responsabilità: € ' + responsabilita.toFixed(2);
+        }
+    </script>
+</body>
+</html>
